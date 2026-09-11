@@ -1,0 +1,930 @@
+/* =========================================================
+   CRAI — AI ANALYSIS
+   Light enterprise dashboard styling
+========================================================= */
+
+.ai-analysis-page {
+  width: 100%;
+}
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.compact-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+
+  margin-bottom: 24px;
+}
+
+.page-heading {
+  width: 100%;
+}
+
+.page-heading .eyebrow,
+.eyebrow {
+  margin-bottom: 7px;
+
+  color: var(--crai-green);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.2;
+
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.page-heading h1 {
+  margin: 0;
+
+  color: var(--crai-text);
+  font-size: 30px;
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+
+.page-heading p {
+  margin: 8px 0 0;
+
+  color: var(--crai-text-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.model-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  border: 1px solid var(--crai-border);
+  border-radius: 7px;
+
+  background: var(--crai-surface);
+  color: var(--crai-green-dark);
+
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.model-badge.large {
+  padding: 8px 11px;
+  white-space: nowrap;
+}
+
+
+/* =========================================================
+   AI STATUS STRIP
+========================================================= */
+
+.stat-strip {
+  display: grid;
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  overflow: hidden;
+
+  margin-bottom: 20px;
+
+  border: 1px solid var(--crai-border);
+  border-radius: var(--crai-radius-md);
+
+  background: var(--crai-surface);
+  box-shadow: var(--crai-shadow-sm);
+}
+
+.ai-stat-strip > div {
+  min-width: 0;
+  padding: 13px 16px;
+
+  border-right: 1px solid var(--crai-border-soft);
+}
+
+.ai-stat-strip > div:last-child {
+  border-right: 0;
+}
+
+.ai-stat-strip span {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: var(--crai-text-muted);
+
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.2;
+
+  letter-spacing: 0.11em;
+}
+
+.ai-stat-strip b {
+  display: block;
+
+  overflow: hidden;
+
+  color: var(--crai-text);
+
+  font-size: 13px;
+  font-weight: 650;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ai-stat-strip .green-text {
+  color: var(--crai-green);
+}
+
+
+/* =========================================================
+   ERRORS
+========================================================= */
+
+.ai-error,
+.ai-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  margin-bottom: 16px;
+  padding: 12px 14px;
+
+  border: 1px solid var(--crai-border);
+  border-radius: 9px;
+
+  background: var(--crai-surface);
+}
+
+.ai-error {
+  color: var(--crai-danger);
+  border-color: #efd6d2;
+  background: var(--crai-danger-soft);
+}
+
+.ai-warning {
+  color: #876320;
+  border-color: #eee0bd;
+  background: var(--crai-warning-soft);
+}
+
+.ai-error > svg,
+.ai-warning > svg {
+  flex: 0 0 auto;
+  margin-top: 1px;
+}
+
+.ai-error div,
+.ai-warning div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ai-error strong,
+.ai-warning strong {
+  color: var(--crai-text);
+  font-size: 12px;
+}
+
+.ai-error span,
+.ai-warning span {
+  color: var(--crai-text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   MAIN IMAGE WORKSPACE
+========================================================= */
+
+.ai-workspace {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 0.95fr)
+    minmax(0, 1.05fr);
+
+  gap: 16px;
+
+  margin-bottom: 16px;
+}
+
+
+/*
+   ImageUploader and PredictionResult may already
+   have their own internal styles. These wrappers
+   provide consistent panel geometry.
+*/
+
+.ai-workspace > * {
+  min-width: 0;
+}
+
+
+/* =========================================================
+   GENERIC PANEL
+========================================================= */
+
+.panel {
+  min-width: 0;
+
+  border: 1px solid var(--crai-border);
+  border-radius: var(--crai-radius-lg);
+
+  background: var(--crai-surface);
+  box-shadow: var(--crai-shadow-sm);
+}
+
+
+/* =========================================================
+   RISK INTELLIGENCE
+========================================================= */
+
+.ai-risk-panel {
+  margin-bottom: 16px;
+  padding: 20px;
+}
+
+.ai-risk-panel .section-header {
+  margin-bottom: 18px;
+}
+
+
+/* =========================================================
+   RISK LOADING
+========================================================= */
+
+.risk-loading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  min-height: 92px;
+  padding: 16px;
+
+  border: 1px solid var(--crai-border-soft);
+  border-radius: 9px;
+
+  background: var(--crai-surface-soft);
+
+  color: var(--crai-green);
+}
+
+.risk-loading > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.risk-loading strong {
+  color: var(--crai-text);
+  font-size: 13px;
+}
+
+.risk-loading span {
+  color: var(--crai-text-secondary);
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   RISK OVERVIEW
+========================================================= */
+
+.risk-overview {
+  display: grid;
+
+  grid-template-columns:
+    1fr
+    1fr
+    1.4fr;
+
+  gap: 10px;
+
+  margin-bottom: 12px;
+}
+
+.risk-score-block,
+.risk-level-card,
+.risk-disease-block {
+  min-height: 105px;
+
+  padding: 16px;
+
+  border: 1px solid var(--crai-border-soft);
+  border-radius: 9px;
+
+  background: var(--crai-surface-soft);
+}
+
+.risk-score-block span,
+.risk-level-card span,
+.risk-disease-block span {
+  display: block;
+
+  margin-bottom: 8px;
+
+  color: var(--crai-text-muted);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.risk-score-block strong {
+  display: inline-block;
+
+  color: var(--crai-text);
+
+  font-size: 31px;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.risk-score-block small {
+  margin-left: 5px;
+
+  color: var(--crai-text-muted);
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   RISK LEVEL
+========================================================= */
+
+.risk-level-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.risk-level-card strong {
+  color: var(--crai-green-dark);
+
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.risk-level-card.low {
+  background: var(--crai-green-soft);
+  border-color: #d9eadb;
+}
+
+.risk-level-card.low strong {
+  color: var(--crai-green-dark);
+}
+
+.risk-level-card.moderate {
+  background: var(--crai-warning-soft);
+  border-color: #eee0bd;
+}
+
+.risk-level-card.moderate strong {
+  color: #876320;
+}
+
+.risk-level-card.high,
+.risk-level-card.critical {
+  background: var(--crai-danger-soft);
+  border-color: #efd6d2;
+}
+
+.risk-level-card.high strong,
+.risk-level-card.critical strong {
+  color: #a4453d;
+}
+
+
+/* =========================================================
+   DISEASE SIGNAL
+========================================================= */
+
+.risk-disease-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.risk-disease-block strong {
+  color: var(--crai-text);
+
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.risk-disease-block small {
+  margin-top: 5px;
+
+  color: var(--crai-text-secondary);
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   RISK CONTEXT
+========================================================= */
+
+.risk-context-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  overflow: hidden;
+
+  border: 1px solid var(--crai-border-soft);
+  border-radius: 9px;
+
+  background: var(--crai-surface);
+}
+
+.risk-context-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  min-width: 0;
+  padding: 12px;
+
+  border-right: 1px solid var(--crai-border-soft);
+}
+
+.risk-context-grid > div:last-child {
+  border-right: 0;
+}
+
+.risk-context-grid svg {
+  margin-bottom: 2px;
+
+  color: var(--crai-green);
+}
+
+.risk-context-grid span {
+  color: var(--crai-text-muted);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.risk-context-grid strong {
+  overflow: hidden;
+
+  color: var(--crai-text);
+
+  font-size: 11px;
+  font-weight: 650;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   FARMER DECISION
+========================================================= */
+
+.decision-panel {
+  margin-bottom: 16px;
+  padding: 20px;
+
+  border-left-width: 3px;
+}
+
+.decision-panel.low {
+  border-left-color: var(--crai-green);
+}
+
+.decision-panel.moderate {
+  border-left-color: var(--crai-warning);
+}
+
+.decision-panel.high,
+.decision-panel.critical {
+  border-left-color: var(--crai-danger);
+}
+
+.decision-panel.pending {
+  border-left-color: var(--crai-text-muted);
+}
+
+
+/* =========================================================
+   DECISION HEADER
+========================================================= */
+
+.decision-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.decision-icon {
+  display: grid;
+  place-items: center;
+
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+
+  border-radius: 8px;
+
+  background: var(--crai-green-soft);
+  color: var(--crai-green);
+}
+
+.decision-panel.high .decision-icon,
+.decision-panel.critical .decision-icon {
+  background: var(--crai-danger-soft);
+  color: var(--crai-danger);
+}
+
+.decision-panel.moderate .decision-icon {
+  background: var(--crai-warning-soft);
+  color: var(--crai-warning);
+}
+
+.decision-header > div:last-child {
+  min-width: 0;
+}
+
+.decision-header .eyebrow {
+  margin-bottom: 5px;
+}
+
+.decision-header h2 {
+  margin: 0;
+
+  color: var(--crai-text);
+
+  font-size: 19px;
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.decision-header p {
+  max-width: 720px;
+
+  margin: 6px 0 0;
+
+  color: var(--crai-text-secondary);
+
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+
+/* =========================================================
+   DECISION ACTIONS
+========================================================= */
+
+.decision-actions {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  gap: 8px;
+
+  margin-top: 18px;
+}
+
+.decision-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  min-width: 0;
+  min-height: 48px;
+
+  padding: 9px 10px;
+
+  border: 1px solid var(--crai-border-soft);
+  border-radius: 7px;
+
+  background: var(--crai-surface-soft);
+}
+
+.decision-action > span {
+  color: var(--crai-text-muted);
+
+  font-family: ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.decision-action strong {
+  flex: 1;
+  min-width: 0;
+
+  color: var(--crai-text);
+
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.decision-action svg {
+  flex: 0 0 auto;
+
+  color: var(--crai-text-muted);
+}
+
+
+/* =========================================================
+   BOTTOM INFORMATION GRID
+========================================================= */
+
+.ai-info-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.35fr)
+    minmax(300px, 0.65fr);
+
+  gap: 16px;
+
+  margin-top: 0;
+}
+
+.ai-info-grid > .panel {
+  padding: 20px;
+}
+
+
+/* =========================================================
+   PIPELINE
+========================================================= */
+
+.pipeline {
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+
+  padding: 6px 0;
+}
+
+.pipeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  min-width: 100px;
+
+  text-align: center;
+}
+
+.pipeline-step > div {
+  display: grid;
+  place-items: center;
+
+  width: 34px;
+  height: 34px;
+
+  margin-bottom: 7px;
+
+  border: 1px solid var(--crai-border);
+
+  border-radius: 8px;
+
+  background: var(--crai-surface-soft);
+  color: var(--crai-text-muted);
+}
+
+.pipeline-step.active > div {
+  border-color: #d5e5d7;
+
+  background: var(--crai-green-soft);
+  color: var(--crai-green-dark);
+}
+
+.pipeline-step span {
+  margin-bottom: 3px;
+
+  color: var(--crai-text-muted);
+
+  font-size: 8px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+}
+
+.pipeline-step strong {
+  color: var(--crai-text);
+
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.pipeline-step.future strong {
+  color: var(--crai-text-muted);
+}
+
+.pipeline-line {
+  height: 1px;
+  flex: 1;
+
+  min-width: 18px;
+
+  margin: 0 5px;
+
+  background: var(--crai-border);
+}
+
+
+/* =========================================================
+   SYSTEM CONTEXT
+========================================================= */
+
+.ai-context-panel {
+  min-height: 100%;
+}
+
+.context-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.context-list > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  min-height: 49px;
+
+  border-bottom: 1px solid var(--crai-border-soft);
+}
+
+.context-list > div:last-child {
+  border-bottom: 0;
+}
+
+.context-list span {
+  color: var(--crai-text-secondary);
+
+  font-size: 11px;
+}
+
+.context-list strong {
+  max-width: 55%;
+
+  overflow: hidden;
+
+  color: var(--crai-text);
+
+  font-size: 11px;
+  font-weight: 650;
+
+  text-align: right;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   SECTION HEADER COMPATIBILITY
+========================================================= */
+
+.section-header {
+  margin-bottom: 16px;
+}
+
+.section-header h2,
+.section-header h3 {
+  color: var(--crai-text);
+}
+
+
+/* =========================================================
+   RISK EXPLANATION SPACING
+========================================================= */
+
+.risk-explanation {
+  margin-bottom: 16px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+  .ai-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .risk-context-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .risk-context-grid > div:nth-child(2) {
+    border-right: 0;
+  }
+
+  .risk-context-grid > div:nth-child(-n + 2) {
+    border-bottom: 1px solid var(--crai-border-soft);
+  }
+
+  .decision-actions {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+@media (max-width: 800px) {
+  .compact-heading {
+    flex-direction: column;
+  }
+
+  .stat-strip {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .ai-stat-strip > div:nth-child(even) {
+    border-right: 0;
+  }
+
+  .ai-stat-strip > div:nth-child(-n + 3) {
+    border-bottom: 1px solid var(--crai-border-soft);
+  }
+
+  .risk-overview {
+    grid-template-columns: 1fr;
+  }
+
+  .decision-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .pipeline {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding-bottom: 10px;
+  }
+
+  .pipeline-step {
+    flex: 0 0 100px;
+  }
+
+  .pipeline-line {
+    flex: 0 0 25px;
+  }
+}
+
+
+@media (max-width: 560px) {
+  .stat-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-stat-strip > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--crai-border-soft);
+  }
+
+  .ai-stat-strip > div:last-child {
+    border-bottom: 0;
+  }
+
+  .risk-context-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .risk-context-grid > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--crai-border-soft);
+  }
+
+  .risk-context-grid > div:last-child {
+    border-bottom: 0;
+  }
+}

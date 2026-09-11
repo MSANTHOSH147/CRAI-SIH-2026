@@ -1,0 +1,55 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap");
+
+body {
+  font-family: var(--font-body);
+  color: var(--crai-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  color: var(--crai-text);
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: var(--crai-text-muted);
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.page-heading h1 {
+  margin: 8px 0 6px;
+
+  font: 700 32px/1 var(--font-display);
+
+  letter-spacing: -0.045em;
+}
+
+.page-heading p {
+  margin: 0;
+
+  color: var(--crai-text-muted);
+
+  font-size: 12px;
+  line-height: 1.55;
+}

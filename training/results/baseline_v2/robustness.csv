@@ -1,0 +1,8 @@
+condition,images,correct,accuracy_percent
+original,77,33,42.8571
+brightness_reduced,77,29,37.6623
+contrast_reduced,77,33,42.8571
+blur,77,30,38.961
+noise,77,27,35.0649
+low_resolution,77,22,28.5714
+partial_occlusion,77,25,32.4675

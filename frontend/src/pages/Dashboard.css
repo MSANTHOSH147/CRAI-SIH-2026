@@ -1,0 +1,763 @@
+﻿/* =========================================================
+   CRAI — DASHBOARD
+   COMPONENT STYLES ONLY
+   Application layout is owned by crai-theme.css.
+   ========================================================= */
+
+.page-heading {
+  width: 100%;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 28px;
+
+  margin: 0 0 24px;
+
+  min-width: 0;
+}
+
+.page-heading > div:first-child {
+  min-width: 0;
+}
+
+.page-heading h1 {
+  margin: 7px 0 6px;
+
+  color: var(--crai-text);
+
+  font-size: 34px;
+  line-height: 1.05;
+
+  font-weight: 750;
+
+  letter-spacing: -0.045em;
+}
+
+.page-heading p {
+  margin: 0;
+
+  color: var(--crai-text-secondary);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  color: #78837b;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.14em;
+
+  text-transform: uppercase;
+}
+
+.heading-context {
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+}
+
+.weather-mini {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 8px;
+
+  color: var(--crai-green);
+
+  white-space: nowrap;
+}
+
+.weather-mini span {
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+}
+
+.weather-mini b {
+  color: var(--crai-text);
+
+  font-size: 11px;
+}
+
+.weather-mini small {
+  color: var(--crai-text-muted);
+
+  font-size: 9px;
+}
+
+.farm-select {
+  padding-left: 16px;
+
+  border-left: 1px solid var(--crai-border);
+
+  white-space: nowrap;
+}
+
+.farm-select span {
+  display: block;
+
+  color: var(--crai-text-muted);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+}
+
+.farm-select b {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--crai-text);
+
+  font-size: 11px;
+}
+
+.kpi-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, minmax(0, 1fr));
+
+  gap: 12px;
+
+  margin-bottom: 16px;
+
+  min-width: 0;
+}
+
+.kpi-card {
+  min-width: 0;
+
+  padding: 17px;
+
+  overflow: hidden;
+}
+
+.kpi-card > * {
+  min-width: 0;
+}
+
+.dashboard-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.55fr)
+    minmax(300px, 0.72fr);
+
+  gap: 14px;
+
+  margin-bottom: 16px;
+
+  min-width: 0;
+}
+
+.panel {
+  min-width: 0;
+
+  background: var(--crai-surface);
+
+  border: 1px solid var(--crai-border);
+
+  border-radius: var(--crai-radius-lg);
+
+  box-shadow: var(--crai-shadow-sm);
+}
+
+.field-panel {
+  min-width: 0;
+
+  padding: 18px;
+
+  grid-row: span 2;
+}
+
+.quick-panel,
+.latest-panel,
+.detections-panel {
+  min-width: 0;
+
+  padding: 18px;
+}
+
+.quick-panel {
+  grid-column: 2;
+}
+
+.latest-panel {
+  grid-column: 2;
+}
+
+.detections-panel {
+  grid-column: 1 / -1;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 14px;
+
+  margin-bottom: 16px;
+
+  min-width: 0;
+}
+
+.panel-heading > div {
+  min-width: 0;
+}
+
+.panel-heading h2 {
+  margin: 4px 0 0;
+
+  color: var(--crai-text);
+
+  font-size: 17px;
+  line-height: 1.2;
+
+  letter-spacing: -0.025em;
+}
+
+.panel-heading > div > span {
+  color: var(--crai-text-muted);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.1em;
+}
+
+.text-action,
+.outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 34px;
+
+  padding: 0 11px;
+
+  border: 1px solid var(--crai-border);
+
+  border-radius: 8px;
+
+  background: var(--crai-surface);
+
+  color: var(--crai-text-secondary);
+
+  font-size: 10px;
+  font-weight: 750;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+}
+
+.text-action {
+  border-color: transparent;
+
+  background: transparent;
+
+  color: var(--crai-green-dark);
+}
+
+.text-action:hover {
+  color: var(--crai-green);
+}
+
+.action-button {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    auto
+    minmax(0, 1fr)
+    auto;
+
+  align-items: center;
+
+  gap: 9px;
+
+  min-height: 44px;
+
+  margin-top: 7px;
+
+  padding: 0 12px;
+
+  border: 1px solid var(--crai-border);
+
+  border-radius: 9px;
+
+  background: var(--crai-surface);
+
+  color: var(--crai-text-secondary);
+
+  text-align: left;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.action-button:hover {
+  border-color: #c8d4c9;
+}
+
+.action-button.primary {
+  background: var(--crai-green-dark);
+
+  border-color: var(--crai-green-dark);
+
+  color: #ffffff;
+}
+
+.analysis-highlight {
+  display: flex;
+
+  gap: 10px;
+
+  padding: 12px;
+
+  border-radius: 9px;
+
+  background: var(--crai-green-soft);
+}
+
+.analysis-icon {
+  width: 36px;
+  height: 36px;
+
+  flex: 0 0 36px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: var(--crai-green);
+}
+
+.analysis-highlight small {
+  display: block;
+
+  color: var(--crai-green);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+}
+
+.analysis-highlight b {
+  display: block;
+
+  margin-top: 4px;
+
+  color: var(--crai-text);
+
+  font-size: 11px;
+}
+
+.analysis-highlight p {
+  margin: 4px 0 0;
+
+  color: var(--crai-text-secondary);
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+.field-view-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.6fr)
+    minmax(180px, 0.7fr);
+
+  gap: 12px;
+
+  min-width: 0;
+}
+
+.field-view-grid > * {
+  min-width: 0;
+}
+
+.thermal-preview {
+  min-height: 280px;
+
+  overflow: hidden;
+
+  border: 1px solid var(--crai-border);
+
+  border-radius: 10px;
+
+  background: var(--crai-surface-soft);
+}
+
+.thermal-bg {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  min-height: 280px;
+
+  background:
+    radial-gradient(
+      circle at 65% 35%,
+      rgba(196, 90, 79, 0.20),
+      transparent 22%
+    ),
+    radial-gradient(
+      circle at 40% 65%,
+      rgba(184, 135, 53, 0.16),
+      transparent 25%
+    ),
+    linear-gradient(
+      135deg,
+      #edf4e9,
+      #f8faf7
+    );
+}
+
+.thermal-hotspot {
+  position: absolute;
+
+  top: 18px;
+  right: 18px;
+
+  padding: 6px 8px;
+
+  border-radius: 6px;
+
+  background: rgba(255,255,255,0.9);
+
+  color: var(--crai-danger);
+
+  font-size: 8px;
+  font-weight: 800;
+
+  letter-spacing: 0.08em;
+}
+
+.thermal-caption {
+  position: absolute;
+
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+
+  padding: 10px;
+
+  border-radius: 8px;
+
+  background: rgba(255,255,255,0.92);
+
+  border: 1px solid rgba(225,231,225,0.9);
+
+  color: var(--crai-text-secondary);
+
+  font-size: 9px;
+}
+
+.lower-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1.1fr)
+    minmax(0, 0.9fr);
+
+  gap: 14px;
+
+  min-width: 0;
+}
+
+.sensor-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 9px;
+}
+
+.sensor-card {
+  position: relative;
+
+  min-width: 0;
+
+  padding: 13px;
+
+  border: 1px solid var(--crai-border-soft);
+
+  border-radius: 9px;
+
+  background: var(--crai-surface-soft);
+}
+
+.sensor-card span {
+  display: block;
+
+  color: var(--crai-text-muted);
+
+  font-size: 9px;
+}
+
+.sensor-card strong {
+  display: block;
+
+  margin-top: 6px;
+
+  color: var(--crai-text);
+
+  font-size: 17px;
+}
+
+.sensor-card i {
+  position: absolute;
+
+  top: 13px;
+  right: 13px;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #78a45b;
+}
+
+.detection-list {
+  display: grid;
+
+  gap: 8px;
+}
+
+.detection-row {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  min-width: 0;
+
+  padding: 10px;
+
+  border: 1px solid var(--crai-border-soft);
+
+  border-radius: 8px;
+}
+
+.detection-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.detection-main b,
+.detection-main span {
+  display: block;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.detection-main b {
+  color: var(--crai-text);
+
+  font-size: 10px;
+}
+
+.detection-main span {
+  margin-top: 2px;
+
+  color: var(--crai-text-muted);
+
+  font-size: 8px;
+}
+
+.risk-tag {
+  flex: 0 0 auto;
+
+  padding: 5px 6px;
+
+  border-radius: 5px;
+
+  font-size: 7px;
+  font-weight: 800;
+
+  text-transform: uppercase;
+}
+
+.risk-tag.low {
+  background: var(--crai-green-soft);
+
+  color: var(--crai-green-dark);
+}
+
+.risk-tag.moderate {
+  background: var(--crai-warning-soft);
+
+  color: #876320;
+}
+
+.risk-tag.high,
+.risk-tag.critical {
+  background: var(--crai-danger-soft);
+
+  color: #a4453d;
+}
+
+.field-footer {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  margin-top: 10px;
+
+  padding: 10px 2px 0;
+
+  border-top: 1px solid var(--crai-border-soft);
+
+  color: var(--crai-text-secondary);
+
+  font-size: 8px;
+}
+
+.field-footer span {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+}
+
+.field-footer small {
+  margin-left: auto;
+
+  color: var(--crai-text-muted);
+}
+
+.legend-dot {
+  width: 7px;
+  height: 7px;
+
+  display: inline-block;
+
+  border-radius: 50%;
+}
+
+.legend-dot.green {
+  background: var(--crai-green);
+}
+
+.legend-dot.amber {
+  background: #bd8d30;
+}
+
+.legend-dot.red {
+  background: var(--crai-danger);
+}
+
+@media (max-width: 1100px) {
+  .heading-context {
+    gap: 10px;
+  }
+
+  .kpi-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field-panel {
+    grid-row: auto;
+  }
+
+  .quick-panel,
+  .latest-panel {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 800px) {
+  .page-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .heading-context {
+    width: 100%;
+  }
+
+  .field-view-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lower-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .kpi-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .heading-context {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .farm-select {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .sensor-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 430px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}

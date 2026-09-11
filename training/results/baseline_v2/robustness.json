@@ -1,0 +1,50 @@
+{
+  "benchmark_version": "CRAI_VISION_BENCHMARK_V1",
+  "model": "MobileNetV3-Small V2",
+  "test_dataset": "PlantDoc",
+  "images": 77,
+  "conditions": [
+    {
+      "condition": "original",
+      "images": 77,
+      "correct": 33,
+      "accuracy_percent": 42.8571
+    },
+    {
+      "condition": "brightness_reduced",
+      "images": 77,
+      "correct": 29,
+      "accuracy_percent": 37.6623
+    },
+    {
+      "condition": "contrast_reduced",
+      "images": 77,
+      "correct": 33,
+      "accuracy_percent": 42.8571
+    },
+    {
+      "condition": "blur",
+      "images": 77,
+      "correct": 30,
+      "accuracy_percent": 38.961
+    },
+    {
+      "condition": "noise",
+      "images": 77,
+      "correct": 27,
+      "accuracy_percent": 35.0649
+    },
+    {
+      "condition": "low_resolution",
+      "images": 77,
+      "correct": 22,
+      "accuracy_percent": 28.5714
+    },
+    {
+      "condition": "partial_occlusion",
+      "images": 77,
+      "correct": 25,
+      "accuracy_percent": 32.4675
+    }
+  ]
+}

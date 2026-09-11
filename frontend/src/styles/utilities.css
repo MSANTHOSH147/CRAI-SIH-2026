@@ -1,0 +1,184 @@
+/* =========================================================
+   CRAI — GLOBAL UTILITIES
+   ========================================================= */
+
+
+/* =========================================================
+   BOX SIZING
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   GLOBAL BUTTONS / INPUTS
+   ========================================================= */
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline:
+    2px solid rgba(57, 122, 77, 0.35);
+
+  outline-offset: 2px;
+}
+
+
+/* =========================================================
+   PANELS
+   ========================================================= */
+
+.panel {
+  background:
+    var(--crai-surface);
+
+  border:
+    1px solid var(--crai-border);
+
+  border-radius:
+    var(--crai-radius-lg);
+
+  box-shadow:
+    var(--crai-shadow-sm);
+}
+
+
+/* =========================================================
+   PAGE CONTENT
+   ========================================================= */
+
+.page-content {
+  width: 100%;
+  max-width: none;
+
+  margin: 0;
+}
+
+
+/* =========================================================
+   PAGE DIRECT CHILDREN
+   ========================================================= */
+
+.page-content > * {
+  width: 100%;
+  max-width: none;
+
+  min-width: 0;
+
+  margin-left: 0;
+  margin-right: 0;
+
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   DASHBOARD
+   ========================================================= */
+
+.page-content > .page-heading,
+.page-content > .kpi-grid,
+.page-content > .dashboard-grid,
+.page-content > .hero-grid,
+.page-content > .lower-grid,
+.page-content > .bottom-grid {
+  width: 100%;
+  max-width: none;
+
+  margin-left: 0;
+  margin-right: 0;
+
+  left: auto;
+  right: auto;
+
+  transform: none;
+}
+
+
+/* =========================================================
+   COMMON BUTTONS
+   ========================================================= */
+
+.text-button {
+  border: 0;
+  background: transparent;
+
+  color: var(--crai-green);
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.outline-button {
+  border:
+    1px solid var(--crai-border);
+
+  background:
+    var(--crai-surface);
+
+  color:
+    var(--crai-text);
+
+  border-radius:
+    var(--crai-radius-md);
+
+  cursor: pointer;
+}
+
+.action-button {
+  border:
+    1px solid var(--crai-border);
+
+  background:
+    var(--crai-surface);
+
+  color:
+    var(--crai-text);
+
+  border-radius:
+    var(--crai-radius-md);
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   PAGE HEADINGS
+   ========================================================= */
+
+.page-heading {
+  width: 100%;
+  min-width: 0;
+}
+
+.page-heading h1 {
+  margin-top: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .page-content {
+    width: 100%;
+  }
+}

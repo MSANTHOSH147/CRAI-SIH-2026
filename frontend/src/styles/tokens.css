@@ -1,0 +1,106 @@
+:root {
+  /* ================================
+     CRAI COLOR SYSTEM
+     ================================ */
+
+  --crai-bg: #f4f6f3;
+  --crai-surface: #ffffff;
+  --crai-surface-soft: #f8faf7;
+  --crai-surface-muted: #eef2ec;
+
+  --crai-border: #dfe5de;
+  --crai-border-soft: #e9eee8;
+  --crai-border-strong: #cfd8cd;
+
+  --crai-text: #172019;
+  --crai-text-secondary: #536158;
+  --crai-text-muted: #7c887f;
+  --crai-text-soft: #969f98;
+
+  /* Brand */
+  --crai-green: #638b55;
+  --crai-green-dark: #214d2b;
+  --crai-green-deep: #142019;
+
+  --crai-green-soft: #edf5e9;
+  --crai-green-pale: #f4f8f1;
+
+  --crai-lime: #d8f36b;
+  --crai-lime-soft: #eef7d5;
+
+  /* Semantic */
+  --crai-success: #6e9d55;
+  --crai-warning: #c49a45;
+  --crai-danger: #c96552;
+  --crai-info: #66879b;
+
+  --crai-success-soft: #edf6e8;
+  --crai-warning-soft: #faf2df;
+  --crai-danger-soft: #f8e6e1;
+
+  /* ================================
+     RADIUS
+     ================================ */
+
+  --radius-xs: 5px;
+  --radius-sm: 7px;
+  --radius-md: 9px;
+  --radius-lg: 12px;
+  --radius-xl: 15px;
+  --radius-pill: 999px;
+
+  /* ================================
+     SHADOWS
+     ================================ */
+
+  --shadow-xs:
+    0 1px 2px rgba(20, 35, 20, 0.04);
+
+  --shadow-sm:
+    0 2px 7px rgba(20, 35, 20, 0.05);
+
+  --shadow-md:
+    0 7px 22px rgba(20, 35, 20, 0.07);
+
+  /* ================================
+     SPACING
+     ================================ */
+
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 10px;
+  --space-5: 12px;
+  --space-6: 14px;
+  --space-7: 16px;
+  --space-8: 18px;
+  --space-9: 20px;
+  --space-10: 24px;
+  --space-11: 28px;
+  --space-12: 32px;
+
+  /* ================================
+     LAYOUT
+     ================================ */
+
+  --sidebar-width: 252px;
+  --sidebar-collapsed: 78px;
+
+  --topbar-height: 70px;
+
+  --content-max-width: none;
+
+  /* ================================
+     TYPOGRAPHY
+     ================================ */
+
+  --font-body: "DM Sans", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+
+  /* ================================
+     TRANSITIONS
+     ================================ */
+
+  --transition-fast: 0.16s ease;
+  --transition-normal: 0.22s ease;
+}

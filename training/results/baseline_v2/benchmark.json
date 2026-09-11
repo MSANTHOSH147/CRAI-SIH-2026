@@ -1,0 +1,14 @@
+{
+  "benchmark_version": "CRAI_VISION_BENCHMARK_V1",
+  "model": "MobileNetV3-Small V2",
+  "checkpoint": "backend\\models\\crai_disease_mobilenetv3_v2.pth",
+  "checkpoint_sha256": "7741fc6b030fe521582e65cb7563343a03a9c3313b1ee02b242131cc9a9ba774",
+  "classes": 11,
+  "input_size": "224x224",
+  "parameters": 1529131,
+  "trainable_parameters": 1529131,
+  "checkpoint_size_mb": 5.9629,
+  "cpu_latency_ms": 38.5066,
+  "device": "CPU",
+  "status": "BASELINE"
+}

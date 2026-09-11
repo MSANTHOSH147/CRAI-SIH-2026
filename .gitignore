@@ -1,0 +1,109 @@
+﻿# ================================
+# CRAI - SIH 2026
+# ================================
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.class
+.pytest_cache/
+.mypy_cache/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Node / React / Vite
+node_modules/
+dist/
+.vite/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Python databases / local runtime
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Python tooling
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Local model/runtime outputs
+ollama_logs/
+runtime_logs/
+
+# Generated exports
+exports/
+temp/
+tmp/
+
+# Secrets / certificates
+*.pem
+*.key
+*.crt
+
+# ================================
+# CRAI LOCAL BACKUPS
+# ================================
+*_backup/
+*backup*
+
+# Large datasets / archives
+backend/CRAI_AI_DATASET.zip
+*.zip
+
+# Temporary CRAI development copies
+crai_clean_temp/
+crai_clean_v2/
+frontend_fix_temp/
+
+
+# Training datasets - kept locally, not in application repo
+backend/AI_HANDOFF/plantdoc/
+backend/AI_HANDOFF/
+
+# Large training datasets
+backend/AI_HANDOFF/plantdoc/
+backend/AI_HANDOFF/plantvillage/
+backend/data/datasets/
+
+# Runtime-generated data
+backend/data/images/
+backend/data/uploads/
+
+
+# Old model experiments
+backend/models/crai_disease_mobilenetv3*.pth
+training/results/candidates/
+
+# Frontend development backups
+frontend/src/App_before_real_integration.jsx
+frontend/src/services/api_before_real_integration.js
+
+# Development structure notes
+crai_structure.txt
+crai_structure_clean.txt
+

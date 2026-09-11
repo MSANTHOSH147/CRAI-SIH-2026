@@ -1,0 +1,21 @@
+{
+  "benchmark_version": "CRAI_VISION_BENCHMARK_V1",
+  "baseline": {
+    "name": "MobileNetV3-Small V2",
+    "checkpoint": "backend/models/crai_disease_mobilenetv3_v2.pth",
+    "classes": "backend/models/classes_v2.json",
+    "status": "FROZEN"
+  },
+  "candidates": [],
+  "metrics": [
+    "accuracy",
+    "macro_precision",
+    "macro_recall",
+    "macro_f1",
+    "per_class_f1",
+    "confusion_matrix",
+    "parameters",
+    "model_size_mb",
+    "cpu_latency_ms"
+  ]
+}
