@@ -107,3 +107,12 @@ frontend/src/services/api_before_real_integration.js
 crai_structure.txt
 crai_structure_clean.txt
 
+# Old model experiments
+backend/models/crai_disease_mobilenetv3*.pth
+training/results/candidates/
+
+# Frontend backups
+frontend/src/*_before_real_integration.*
+
+# Local structure snapshots
+crai_structure*.txt
