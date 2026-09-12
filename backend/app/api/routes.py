@@ -1395,17 +1395,11 @@ def analyze_observation(
 )
 async def analyze_field_image(
     file: UploadFile = File(...),
-
-    # IMPORTANT:
-    # multipart/form-data fields MUST use Form()
     zone_id: str | None = Form(None),
-
     farm_id: int | None = Form(None),
-
     crop: str = Form("Tomato"),
-
     growth_stage: str = Form("Vegetative"),
-
+    advisory_language: str = Form("English"),
     db: Session = Depends(get_db),
 ):
     """

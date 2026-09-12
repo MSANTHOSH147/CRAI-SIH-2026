@@ -1,0 +1,369 @@
+﻿/* ============================================================
+   CRAI — DEFINITIVE SCROLL FIX
+   Sidebar fixed + independently scrollable
+   Main application independently scrollable
+   Topbar remains visible
+============================================================ */
+
+
+/* ------------------------------------------------------------
+   ROOT
+------------------------------------------------------------ */
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+
+  margin: 0;
+  padding: 0;
+
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+
+/* ------------------------------------------------------------
+   APP SHELL
+------------------------------------------------------------ */
+
+.app-shell {
+  position: relative !important;
+
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 100vh !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  overflow: visible !important;
+}
+
+
+/* ------------------------------------------------------------
+   SIDEBAR
+   Fixed to viewport.
+   Sidebar can scroll independently.
+------------------------------------------------------------ */
+
+.app-shell > .sidebar {
+  position: fixed !important;
+
+  top: 0 !important;
+  left: 0 !important;
+  bottom: 0 !important;
+
+  width: 300px !important;
+  min-width: 300px !important;
+  max-width: 300px !important;
+
+  height: 100vh !important;
+
+  margin: 0 !important;
+
+  z-index: 2000 !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+
+  box-sizing: border-box !important;
+
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+
+  overscroll-behavior: contain;
+
+  background: #ffffff !important;
+}
+
+
+/* ------------------------------------------------------------
+   MAIN APPLICATION
+   THIS is the important fix.
+   
+   The MAIN itself becomes the scroll container.
+   This is more robust than relying on page-content
+   to calculate flex height.
+------------------------------------------------------------ */
+
+.app-shell > .app-main {
+  position: fixed !important;
+
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 300px !important;
+
+  width: auto !important;
+  height: 100vh !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  display: block !important;
+
+  box-sizing: border-box !important;
+
+  /*
+     CRITICAL:
+     Main page is now the scroll container.
+  */
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+
+  overscroll-behavior: contain;
+
+  background: var(--crai-bg) !important;
+}
+
+
+/* ------------------------------------------------------------
+   TOPBAR
+   Stays visible while main page scrolls.
+------------------------------------------------------------ */
+
+.app-shell > .app-main > .topbar {
+  position: sticky !important;
+
+  top: 0 !important;
+
+  width: 100% !important;
+  height: 70px !important;
+  min-height: 70px !important;
+
+  margin: 0 !important;
+
+  z-index: 1500 !important;
+
+  box-sizing: border-box !important;
+
+  background: rgba(255, 255, 255, 0.97) !important;
+
+  backdrop-filter: blur(12px);
+}
+
+
+/* ------------------------------------------------------------
+   PAGE CONTENT
+   Normal document flow inside the main scroll container.
+------------------------------------------------------------ */
+
+.app-shell > .app-main > .page-content {
+  position: relative !important;
+
+  width: 100% !important;
+  max-width: none !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+
+  height: auto !important;
+
+  margin: 0 !important;
+
+  padding: 36px 42px 90px !important;
+
+  display: block !important;
+
+  box-sizing: border-box !important;
+
+  /*
+     DO NOT make this another scroll container.
+     The parent .app-main handles scrolling.
+  */
+  overflow: visible !important;
+
+  background: var(--crai-bg) !important;
+}
+
+
+/* ------------------------------------------------------------
+   PAGE CHILDREN
+------------------------------------------------------------ */
+
+.app-shell > .app-main > .page-content > * {
+  position: relative !important;
+
+  width: 100% !important;
+  max-width: 100% !important;
+
+  min-width: 0 !important;
+
+  box-sizing: border-box !important;
+}
+
+
+/* ------------------------------------------------------------
+   REMOVE OLD LAYOUT CONSTRAINTS
+------------------------------------------------------------ */
+
+.app-shell,
+.app-shell > .app-main,
+.app-shell > .app-main > .page-content {
+  transform: none !important;
+}
+
+
+/* ------------------------------------------------------------
+   SCROLLBAR — MAIN
+------------------------------------------------------------ */
+
+.app-shell > .app-main::-webkit-scrollbar {
+  width: 10px;
+}
+
+.app-shell > .app-main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-shell > .app-main::-webkit-scrollbar-thumb {
+  background: rgba(40, 118, 74, 0.22);
+  border-radius: 999px;
+}
+
+.app-shell > .app-main::-webkit-scrollbar-thumb:hover {
+  background: rgba(40, 118, 74, 0.38);
+}
+
+
+/* ------------------------------------------------------------
+   SCROLLBAR — SIDEBAR
+------------------------------------------------------------ */
+
+.app-shell > .sidebar::-webkit-scrollbar {
+  width: 7px;
+}
+
+.app-shell > .sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-shell > .sidebar::-webkit-scrollbar-thumb {
+  background: rgba(40, 118, 74, 0.16);
+  border-radius: 999px;
+}
+
+
+/* ------------------------------------------------------------
+   DESKTOP
+------------------------------------------------------------ */
+
+@media (min-width: 1201px) {
+
+  .app-shell > .sidebar {
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+  }
+
+  .app-shell > .app-main {
+    left: 300px !important;
+  }
+
+}
+
+
+/* ------------------------------------------------------------
+   LAPTOP
+------------------------------------------------------------ */
+
+@media (max-width: 1200px) and (min-width: 901px) {
+
+  .app-shell > .sidebar {
+    width: 250px !important;
+    min-width: 250px !important;
+    max-width: 250px !important;
+  }
+
+  .app-shell > .app-main {
+    left: 250px !important;
+  }
+
+  .app-shell > .app-main > .page-content {
+    padding: 30px 28px 70px !important;
+  }
+
+}
+
+
+/* ------------------------------------------------------------
+   MOBILE
+------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+
+  .app-shell > .sidebar {
+    width: 76px !important;
+    min-width: 76px !important;
+    max-width: 76px !important;
+  }
+
+  .app-shell > .app-main {
+    left: 76px !important;
+  }
+
+  .app-shell > .app-main > .page-content {
+    padding: 25px 20px 60px !important;
+  }
+
+}
+
+
+/* ------------------------------------------------------------
+   SMALL MOBILE
+------------------------------------------------------------ */
+
+@media (max-width: 700px) {
+
+  .app-shell > .sidebar {
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+
+    transform: translateX(-100%);
+  }
+
+  .app-shell > .sidebar.open {
+    width: 285px !important;
+    min-width: 285px !important;
+    max-width: 285px !important;
+
+    transform: translateX(0);
+  }
+
+  .app-shell > .app-main {
+    left: 0 !important;
+  }
+
+  .app-shell > .app-main > .page-content {
+    padding: 22px 16px 55px !important;
+  }
+
+}
+
+
+/* ------------------------------------------------------------
+   SAFETY
+   No full-screen overflow lock.
+------------------------------------------------------------ */
+
+html,
+body,
+#root,
+.app-shell {
+  overflow-x: hidden !important;
+}
+
+.app-shell > .app-main {
+  overflow-y: auto !important;
+}
+
+.app-shell > .app-main > .page-content {
+  overflow-y: visible !important;
+}

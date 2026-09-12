@@ -1,5 +1,5 @@
 """
-CRAI Analysis Service V1.6
+CRAI Analysis Service V1.7
 
 Complete field-observation pipeline:
 
@@ -17,6 +17,10 @@ Field Risk
         ↓
 Decision Engine
         ↓
+Judge Intelligence / Provenance
+        ↓
+Optional Local Qwen3 Advisory
+        ↓
 Observation History
 
 Important:
@@ -25,15 +29,49 @@ Important:
 - Sensor timestamps are passed to the evidence engine.
 - No unsupported sensor_available argument is passed.
 - Risk is calculated only after the evidence gate accepts the observation.
+- Judge intelligence NEVER recalculates risk.
+- Judge intelligence only exposes deterministic reasoning/provenance.
+- Qwen3 is advisory-only and cannot change CRAI risk or decision.
+- Initial farmer-facing advisory languages:
+    English
+    Tamil
+    Hindi
 """
 
 from typing import Optional, Any
 from datetime import datetime, timezone
 
-from app.services.evidence_service import evaluate_evidence
-from app.services.fusion_risk_service import calculate_field_risk
-from app.services.decision_service import generate_decision
-from app.services.llm_service import generate_local_advisory
+
+from app.services.evidence_service import (
+    evaluate_evidence,
+)
+
+from app.services.fusion_risk_service import (
+    calculate_field_risk,
+)
+
+from app.services.decision_service import (
+    generate_decision,
+)
+
+from app.services.llm_service import (
+    generate_local_advisory,
+)
+
+from app.services.judge_intelligence_service import (
+    build_judge_intelligence,
+)
+
+
+# ============================================================
+# CONSTANTS
+# ============================================================
+
+SUPPORTED_ADVISORY_LANGUAGES = {
+    "english": "English",
+    "tamil": "Tamil",
+    "hindi": "Hindi",
+}
 
 
 # ============================================================
@@ -42,19 +80,24 @@ from app.services.llm_service import generate_local_advisory
 
 def _safe_float(
     value: Any,
-    default: float = 0.0,
+    default: Optional[float] = 0.0,
 ) -> float:
     """
     Safely convert a value to float.
     """
 
     try:
+
         if value is None:
             return default
 
         return float(value)
 
-    except (TypeError, ValueError):
+    except (
+        TypeError,
+        ValueError,
+    ):
+
         return default
 
 
@@ -78,9 +121,14 @@ def _extract_sensor_value(
             continue
 
         try:
+
             return float(value)
 
-        except (TypeError, ValueError):
+        except (
+            TypeError,
+            ValueError,
+        ):
+
             continue
 
     return None
@@ -121,19 +169,22 @@ def _parse_sensor_timestamp(
     if value is None:
         return None
 
-    # Already a datetime
-    if isinstance(value, datetime):
+    if isinstance(
+        value,
+        datetime,
+    ):
 
         return value
 
     try:
 
-        text = str(value).strip()
+        text = str(
+            value
+        ).strip()
 
         if not text:
             return None
 
-        # ISO UTC suffix
         if text.endswith("Z"):
 
             text = (
@@ -160,9 +211,6 @@ def _normalize_datetime(
 ) -> Optional[datetime]:
     """
     Convert a datetime to timezone-aware UTC.
-
-    This helper prevents comparisons between
-    naive and timezone-aware datetimes.
     """
 
     if value is None:
@@ -187,19 +235,33 @@ def _get_evidence_detail(
     Safely retrieve one evidence component.
     """
 
-    if not isinstance(evidence, dict):
+    if not isinstance(
+        evidence,
+        dict,
+    ):
+
         return {}
 
     details = evidence.get(
         "details"
     )
 
-    if not isinstance(details, dict):
+    if not isinstance(
+        details,
+        dict,
+    ):
+
         return {}
 
-    value = details.get(name)
+    value = details.get(
+        name
+    )
 
-    if isinstance(value, dict):
+    if isinstance(
+        value,
+        dict,
+    ):
+
         return value
 
     return {}
@@ -213,19 +275,54 @@ def _get_evidence_quality(
     Safely retrieve one evidence quality score.
     """
 
-    if not isinstance(evidence, dict):
+    if not isinstance(
+        evidence,
+        dict,
+    ):
+
         return 0.0
 
     quality = evidence.get(
         "quality"
     )
 
-    if not isinstance(quality, dict):
+    if not isinstance(
+        quality,
+        dict,
+    ):
+
         return 0.0
 
     return _safe_float(
         quality.get(name),
         0.0,
+    )
+
+
+def _normalize_advisory_language(
+    language: Optional[str],
+) -> str:
+    """
+    CRAI initially supports only:
+
+        English
+        Tamil
+        Hindi
+
+    Unknown languages safely fall back to English.
+    """
+
+    if language is None:
+
+        return "English"
+
+    key = str(
+        language
+    ).strip().lower()
+
+    return SUPPORTED_ADVISORY_LANGUAGES.get(
+        key,
+        "English",
     )
 
 
@@ -241,9 +338,9 @@ def analyze_field_observation(
     crop: str = "Tomato",
     growth_stage: str = "Vegetative",
 
-    temperature: float = 0.0,
-    humidity: float = 0.0,
-    thermal_anomaly: float = 0.0,
+    temperature: Optional[float] = None,
+    humidity: Optional[float] = None,
+    thermal_anomaly: Optional[float] = None,
 
     infected_neighbor_count: Optional[int] = None,
     total_neighbor_count: Optional[int] = None,
@@ -262,8 +359,6 @@ def analyze_field_observation(
 
     image_quality: Optional[dict] = None,
 
-    # Optional farmer-facing advisory language for local Qwen3.
-    # Existing callers remain compatible because English is the default.
     advisory_language: str = "English",
 ):
     """
@@ -282,6 +377,10 @@ def analyze_field_observation(
         fusion risk
             ↓
         decision
+            ↓
+        judge intelligence
+            ↓
+        optional Qwen3 advisory
     """
 
     # ========================================================
@@ -325,19 +424,13 @@ def analyze_field_observation(
         )
     )
 
-    # --------------------------------------------------------
-    # Prefer actual sensor values when available.
-    # Do NOT replace missing sensor evidence with
-    # artificial zero values.
-    # --------------------------------------------------------
-
     effective_temperature = (
         temperature_value
         if temperature_value is not None
         else (
             _safe_float(
                 temperature,
-                0.0,
+                None,
             )
             if temperature is not None
             else None
@@ -350,7 +443,7 @@ def analyze_field_observation(
         else (
             _safe_float(
                 humidity,
-                0.0,
+                None,
             )
             if humidity is not None
             else None
@@ -360,10 +453,16 @@ def analyze_field_observation(
     effective_thermal_anomaly = (
         _safe_float(
             thermal_anomaly,
-            0.0,
+            None,
         )
         if thermal_anomaly is not None
         else None
+    )
+
+    advisory_language = (
+        _normalize_advisory_language(
+            advisory_language
+        )
     )
 
     # ========================================================
@@ -384,29 +483,6 @@ def analyze_field_observation(
 
     # ========================================================
     # 3. EVIDENCE EVALUATION
-    # ========================================================
-    #
-    # IMPORTANT:
-    # Do NOT pass sensor_available.
-    #
-    # evaluate_evidence determines environmental
-    # availability directly from `sensor`.
-    #
-    # Its supported arguments are:
-    #
-    # prediction
-    # confidence
-    # sensor
-    # sensor_timestamp
-    # spatial_context
-    # history
-    # infected_neighbor_count
-    # total_neighbor_count
-    # disease_density
-    # cluster_density
-    # second_image_available
-    # thermal_available
-    #
     # ========================================================
 
     evidence = evaluate_evidence(
@@ -452,8 +528,12 @@ def analyze_field_observation(
     # 4. IMAGE QUALITY OVERRIDE
     # ========================================================
     #
-    # A bad image must never become reliable
+    # Bad image must never become reliable
     # visual evidence.
+    #
+    # Judge intelligence is still returned because
+    # the judge should be able to see WHY CRAI
+    # rejected the image.
     # ========================================================
 
     if isinstance(
@@ -481,6 +561,7 @@ def analyze_field_observation(
                 messages,
                 list,
             ):
+
                 messages = [
                     str(messages)
                 ]
@@ -492,6 +573,103 @@ def analyze_field_observation(
                     "Image quality is "
                     "insufficient for reliable "
                     "visual analysis."
+                )
+            )
+
+            image_decision = {
+
+                "ready":
+                    False,
+
+                "action":
+                    "REQUEST_IMAGE",
+
+                "adaptive_action":
+                    "REQUEST_IMAGE",
+
+                "priority":
+                    "HIGH",
+
+                "title":
+                    "Retake image",
+
+                "reason":
+                    reason,
+
+                "requested_evidence":
+                    [
+                        "RETAKE_IMAGE"
+                    ],
+            }
+
+            judge_intelligence = (
+                build_judge_intelligence(
+
+                    disease={
+                        "prediction":
+                            prediction,
+
+                        "confidence":
+                            round(
+                                confidence,
+                                2,
+                            ),
+                    },
+
+                    evidence=evidence,
+
+                    risk=None,
+
+                    decision=image_decision,
+
+                    context={
+
+                        "crop":
+                            crop,
+
+                        "growth_stage":
+                            growth_stage,
+
+                        "observation_count":
+                            observation_count,
+
+                        "sensor": {
+
+                            "available":
+                                bool(sensor),
+
+                            "device_id":
+                                (
+                                    sensor.get(
+                                        "device_id"
+                                    )
+                                    if isinstance(
+                                        sensor,
+                                        dict,
+                                    )
+                                    else None
+                                ),
+
+                            "soil_moisture":
+                                soil_moisture_value,
+
+                            "temperature":
+                                temperature_value,
+
+                            "humidity":
+                                humidity_value,
+
+                            "timestamp":
+                                (
+                                    sensor_timestamp.isoformat()
+                                    if sensor_timestamp
+                                    else None
+                                ),
+
+                        },
+
+                    },
+
                 )
             )
 
@@ -521,22 +699,16 @@ def analyze_field_observation(
                 "risk":
                     None,
 
-                "decision": {
+                "decision":
+                    image_decision,
 
-                    "ready":
-                        False,
+                "adaptive_evidence": {
 
                     "action":
                         "REQUEST_IMAGE",
 
-                    "adaptive_action":
-                        "REQUEST_IMAGE",
-
                     "priority":
                         "HIGH",
-
-                    "title":
-                        "Retake image",
 
                     "reason":
                         reason,
@@ -545,7 +717,17 @@ def analyze_field_observation(
                         [
                             "RETAKE_IMAGE"
                         ],
+
+                    "decision_ready":
+                        False,
+
                 },
+
+                "judge_intelligence":
+                    judge_intelligence,
+
+                "advisory":
+                    None,
 
                 "context": {
 
@@ -555,7 +737,11 @@ def analyze_field_observation(
                     "growth_stage":
                         growth_stage,
 
+                    "observation_count":
+                        observation_count,
+
                 },
+
             }
 
     # ========================================================
@@ -580,6 +766,7 @@ def analyze_field_observation(
             adaptive,
             dict,
         ):
+
             adaptive = {}
 
         requested_evidence = (
@@ -593,6 +780,7 @@ def analyze_field_observation(
             requested_evidence,
             list,
         ):
+
             requested_evidence = [
                 requested_evidence
             ]
@@ -625,6 +813,164 @@ def analyze_field_observation(
             )
         )
 
+        additional_decision = {
+
+            "ready":
+                False,
+
+            "action":
+                "COLLECT_ADDITIONAL_EVIDENCE",
+
+            "adaptive_action":
+                adaptive_action,
+
+            "priority":
+                adaptive_priority,
+
+            "title":
+                "Additional field evidence required",
+
+            "reason":
+                adaptive_reason,
+
+            "requested_evidence":
+                requested_evidence,
+
+        }
+
+        # ----------------------------------------------------
+        # Judge intelligence MUST exist even before
+        # risk calculation.
+        #
+        # This is important because CRAI intentionally
+        # refuses to calculate risk when evidence is stale
+        # or incomplete.
+        # ----------------------------------------------------
+
+        judge_intelligence = (
+            build_judge_intelligence(
+
+                disease={
+
+                    "prediction":
+                        prediction,
+
+                    "confidence":
+                        round(
+                            confidence,
+                            2,
+                        ),
+
+                },
+
+                evidence=evidence,
+
+                risk=None,
+
+                decision=additional_decision,
+
+                context={
+
+                    "crop":
+                        crop,
+
+                    "growth_stage":
+                        growth_stage,
+
+                    "observation_count":
+                        observation_count,
+
+                    "sensor": {
+
+                        "available":
+                            bool(sensor),
+
+                        "device_id":
+                            (
+                                sensor.get(
+                                    "device_id"
+                                )
+                                if isinstance(
+                                    sensor,
+                                    dict,
+                                )
+                                else None
+                            ),
+
+                        "soil_moisture":
+                            soil_moisture_value,
+
+                        "temperature":
+                            temperature_value,
+
+                        "humidity":
+                            humidity_value,
+
+                        "timestamp":
+                            (
+                                sensor_timestamp.isoformat()
+                                if sensor_timestamp
+                                else None
+                            ),
+
+                        "freshness":
+                            (
+                                adaptive.get(
+                                    "sensor_freshness"
+                                )
+                                or
+                                evidence.get(
+                                    "sensor_freshness"
+                                )
+                            ),
+
+                        "age_minutes":
+                            (
+                                adaptive.get(
+                                    "sensor_age_minutes"
+                                )
+                                or
+                                evidence.get(
+                                    "sensor_age_minutes"
+                                )
+                            ),
+
+                    },
+
+                    "spatial": {
+
+                        "available":
+                            bool(
+                                spatial_context
+                            ),
+
+                        "infected_neighbors":
+                            infected_neighbor_count,
+
+                        "total_observed_zones":
+                            total_neighbor_count,
+
+                    },
+
+                    "temporal": {
+
+                        "available":
+                            bool(history),
+
+                        "observation_count":
+                            (
+                                len(history)
+                                if history
+                                else 0
+                            ),
+
+                    },
+
+                },
+
+            )
+        )
+
         return {
 
             "status":
@@ -640,6 +986,7 @@ def analyze_field_observation(
                         confidence,
                         2,
                     ),
+
             },
 
             "image_quality":
@@ -651,29 +998,8 @@ def analyze_field_observation(
             "risk":
                 None,
 
-            "decision": {
-
-                "ready":
-                    False,
-
-                "action":
-                    "COLLECT_ADDITIONAL_EVIDENCE",
-
-                "adaptive_action":
-                    adaptive_action,
-
-                "priority":
-                    adaptive_priority,
-
-                "title":
-                    "Additional field evidence required",
-
-                "reason":
-                    adaptive_reason,
-
-                "requested_evidence":
-                    requested_evidence,
-            },
+            "decision":
+                additional_decision,
 
             "adaptive_evidence": {
 
@@ -694,6 +1020,12 @@ def analyze_field_observation(
 
             },
 
+            "judge_intelligence":
+                judge_intelligence,
+
+            "advisory":
+                None,
+
             "context": {
 
                 "crop":
@@ -702,25 +1034,16 @@ def analyze_field_observation(
                 "growth_stage":
                     growth_stage,
 
+                "observation_count":
+                    observation_count,
+
             },
+
         }
 
     # ========================================================
     # 6. EXTRACT FUSION INPUTS
     # ========================================================
-
-    # --------------------------------------------------------
-    # Spatial evidence
-    # --------------------------------------------------------
-    #
-    # Preserve None when evidence is missing.
-    #
-    # 0 infected / 10 observed
-    # means observed zero infection.
-    #
-    # None / None
-    # means no spatial evidence.
-    # --------------------------------------------------------
 
     spatial_infected = (
         infected_neighbor_count
@@ -772,9 +1095,7 @@ def analyze_field_observation(
     )
 
     # --------------------------------------------------------
-    # If actual sensor data does not exist,
-    # pass None rather than pretending that 0
-    # is a measured environmental value.
+    # Missing sensor evidence remains None.
     # --------------------------------------------------------
 
     if sensor is None:
@@ -896,20 +1217,6 @@ def analyze_field_observation(
     # ========================================================
     # 10. DECISION ENGINE
     # ========================================================
-    #
-    # The decision engine receives the COMPLETE
-    # fusion result.
-    #
-    # This is important because it extracts:
-    #
-    # risk["breakdown"]["visual"]
-    # risk["breakdown"]["environmental"]
-    # risk["breakdown"]["spatial"]
-    # risk["breakdown"]["temporal"]
-    #
-    # instead of reconstructing those values
-    # independently.
-    # ========================================================
 
     decision = generate_decision(
 
@@ -936,110 +1243,7 @@ def analyze_field_observation(
     )
 
     # ========================================================
-    # 11. LOCAL QWEN3 ADVISORY
-    # ========================================================
-    #
-    # IMPORTANT SAFETY BOUNDARY:
-    #
-    # Qwen3 is advisory-only.
-    # It NEVER calculates, changes, or overrides:
-    #   - risk_score
-    #   - risk_level
-    #   - assessment_confidence
-    #   - decision.action
-    #   - decision.priority
-    #
-    # It is called ONLY after the deterministic CRAI pipeline
-    # has accepted the evidence and produced a decision.
-    #
-    # The complete structured CRAI result is passed as grounding.
-    # Missing values remain missing.
-    # ========================================================
-
-    advisory = None
-
-    decision_ready = (
-        isinstance(decision, dict)
-        and bool(decision.get("ready", True))
-    )
-
-    if decision_ready:
-        try:
-            advisory_input = {
-                "crop": crop,
-                "growth_stage": growth_stage,
-
-                "disease": {
-                    "prediction": prediction,
-                    "confidence": round(confidence, 2),
-                },
-
-                # These are authoritative deterministic CRAI outputs.
-                "risk": risk,
-                "decision": decision,
-
-                "context": {
-                    "sensor": {
-                        "available": bool(sensor),
-                        "soil_moisture": soil_moisture,
-                        "temperature": temperature_for_fusion,
-                        "humidity": humidity_for_fusion,
-                        "timestamp": (
-                            sensor_timestamp.isoformat()
-                            if sensor_timestamp
-                            else None
-                        ),
-                        "freshness": sensor_freshness,
-                        "age_minutes": sensor_age_minutes,
-                        "usable": sensor_usable,
-                    },
-
-                    "spatial": {
-                        "available": bool(spatial_context),
-                        "infected_neighbors": spatial_infected,
-                        "total_observed_zones": spatial_total,
-                    },
-
-                    "temporal": {
-                        "available": bool(history),
-                        "observation_count": (
-                            len(history) if history else 0
-                        ),
-                        "history": history,
-                    },
-
-                    "crop": crop,
-                    "growth_stage": growth_stage,
-                    "observation_count": observation_count,
-                },
-
-                "evidence": evidence,
-            }
-
-            advisory = generate_local_advisory(
-                field_data=advisory_input,
-                language=advisory_language,
-            )
-
-        except Exception as exc:
-            # Never allow an LLM failure to break deterministic CRAI.
-            advisory = {
-                "available": False,
-                "provider": "OLLAMA",
-                "model": "qwen3:1.7b",
-                "language": advisory_language,
-                "advisory": (
-                    "Local advisory is temporarily unavailable. "
-                    "Follow the CRAI decision and recommended steps."
-                ),
-                "grounded_evidence": None,
-                "offline": True,
-                "fallback": True,
-                "error": str(exc),
-            }
-
-    # ========================================================
-    # 12. FINAL EVIDENCE SUMMARY
+    # 11. FINAL EVIDENCE SUMMARY
     # ========================================================
 
     available = evidence.get(
@@ -1051,6 +1255,7 @@ def analyze_field_observation(
         available,
         dict,
     ):
+
         available = {}
 
     evidence_count = sum(
@@ -1068,41 +1273,395 @@ def analyze_field_observation(
     if evidence_quality is None:
 
         quality_values = [
+
             _get_evidence_quality(
                 evidence,
                 name,
             )
+
             for name in (
                 "visual",
                 "environmental",
                 "spatial",
                 "temporal",
             )
-            if available.get(name)
+
+            if available.get(
+                name
+            )
+
         ]
 
         if quality_values:
 
             average_quality = (
-                sum(quality_values)
-                / len(quality_values)
+                sum(
+                    quality_values
+                )
+                /
+                len(
+                    quality_values
+                )
             )
 
             if average_quality >= 0.85:
-                evidence_quality = "HIGH"
+
+                evidence_quality = (
+                    "HIGH"
+                )
 
             elif average_quality >= 0.60:
-                evidence_quality = "MODERATE"
+
+                evidence_quality = (
+                    "MODERATE"
+                )
 
             else:
-                evidence_quality = "LOW"
+
+                evidence_quality = (
+                    "LOW"
+                )
 
         else:
 
             evidence_quality = "LOW"
 
     # ========================================================
-    # 13. FINAL RESPONSE
+    # 12. JUDGE INTELLIGENCE
+    # ========================================================
+    #
+    # This layer ONLY exposes the reasoning already
+    # produced by CRAI.
+    #
+    # It does NOT calculate a new risk.
+    # ========================================================
+
+    judge_intelligence = (
+        build_judge_intelligence(
+
+            disease={
+
+                "prediction":
+                    prediction,
+
+                "confidence":
+                    round(
+                        confidence,
+                        2,
+                    ),
+
+            },
+
+            evidence=evidence,
+
+            risk=risk,
+
+            decision=decision,
+
+            context={
+
+                "crop":
+                    crop,
+
+                "growth_stage":
+                    growth_stage,
+
+                "observation_count":
+                    observation_count,
+
+                "sensor": {
+
+                    "available":
+                        bool(sensor),
+
+                    "device_id":
+                        (
+                            sensor.get(
+                                "device_id"
+                            )
+                            if isinstance(
+                                sensor,
+                                dict,
+                            )
+                            else None
+                        ),
+
+                    "soil_moisture":
+                        soil_moisture,
+
+                    "temperature":
+                        temperature_for_fusion,
+
+                    "humidity":
+                        humidity_for_fusion,
+
+                    "timestamp":
+                        (
+                            sensor_timestamp.isoformat()
+                            if sensor_timestamp
+                            else None
+                        ),
+
+                    "freshness":
+                        sensor_freshness,
+
+                    "age_minutes":
+                        sensor_age_minutes,
+
+                    "usable":
+                        sensor_usable,
+
+                },
+
+                "spatial": {
+
+                    "available":
+                        bool(
+                            spatial_context
+                        ),
+
+                    "infected_neighbors":
+                        spatial_infected,
+
+                    "total_observed_zones":
+                        spatial_total,
+
+                },
+
+                "temporal": {
+
+                    "available":
+                        bool(
+                            history
+                        ),
+
+                    "observation_count":
+                        (
+                            len(history)
+                            if history
+                            else 0
+                        ),
+
+                },
+
+                "evidence_count":
+                    evidence_count,
+
+                "evidence_quality":
+                    evidence_quality,
+
+            },
+
+        )
+    )
+
+    # ========================================================
+    # 13. LOCAL QWEN3 ADVISORY
+    # ========================================================
+    #
+    # IMPORTANT:
+    #
+    # Qwen3 is explanation-only.
+    #
+    # It NEVER changes:
+    #
+    #   risk_score
+    #   risk_level
+    #   assessment_confidence
+    #   decision.action
+    #   decision.priority
+    #
+    # Qwen3 is called only after the deterministic
+    # CRAI pipeline has accepted the evidence.
+    # ========================================================
+
+    advisory = None
+
+    decision_ready = (
+        isinstance(
+            decision,
+            dict,
+        )
+        and bool(
+            decision.get(
+                "ready",
+                True,
+            )
+        )
+    )
+
+    if decision_ready:
+
+        try:
+
+            advisory_input = {
+
+                "crop":
+                    crop,
+
+                "growth_stage":
+                    growth_stage,
+
+                "disease": {
+
+                    "prediction":
+                        prediction,
+
+                    "confidence":
+                        round(
+                            confidence,
+                            2,
+                        ),
+
+                },
+
+                "risk":
+                    risk,
+
+                "decision":
+                    decision,
+
+                "context": {
+
+                    "sensor": {
+
+                        "available":
+                            bool(sensor),
+
+                        "soil_moisture":
+                            soil_moisture,
+
+                        "temperature":
+                            temperature_for_fusion,
+
+                        "humidity":
+                            humidity_for_fusion,
+
+                        "timestamp":
+                            (
+                                sensor_timestamp.isoformat()
+                                if sensor_timestamp
+                                else None
+                            ),
+
+                        "freshness":
+                            sensor_freshness,
+
+                        "age_minutes":
+                            sensor_age_minutes,
+
+                        "usable":
+                            sensor_usable,
+
+                    },
+
+                    "spatial": {
+
+                        "available":
+                            bool(
+                                spatial_context
+                            ),
+
+                        "infected_neighbors":
+                            spatial_infected,
+
+                        "total_observed_zones":
+                            spatial_total,
+
+                    },
+
+                    "temporal": {
+
+                        "available":
+                            bool(history),
+
+                        "observation_count":
+                            (
+                                len(history)
+                                if history
+                                else 0
+                            ),
+
+                        "history":
+                            history,
+
+                    },
+
+                    "crop":
+                        crop,
+
+                    "growth_stage":
+                        growth_stage,
+
+                    "observation_count":
+                        observation_count,
+
+                },
+
+                "evidence":
+                    evidence,
+
+                "judge_intelligence":
+                    judge_intelligence,
+
+            }
+
+            advisory = (
+                generate_local_advisory(
+
+                    field_data=
+                        advisory_input,
+
+                    language=
+                        advisory_language,
+
+                )
+            )
+
+        except Exception as exc:
+
+            # ------------------------------------------------
+            # LLM failure must NEVER break deterministic CRAI.
+            # ------------------------------------------------
+
+            advisory = {
+
+                "available":
+                    False,
+
+                "provider":
+                    "OLLAMA",
+
+                "model":
+                    "qwen3:1.7b",
+
+                "language":
+                    advisory_language,
+
+                "advisory":
+                    (
+                        "Local advisory is "
+                        "temporarily unavailable. "
+                        "Follow the CRAI decision "
+                        "and recommended steps."
+                    ),
+
+                "grounded_evidence":
+                    None,
+
+                "offline":
+                    True,
+
+                "fallback":
+                    True,
+
+                "error":
+                    str(exc),
+
+            }
+
+    # ========================================================
+    # 14. FINAL RESPONSE
     # ========================================================
 
     return {
@@ -1129,15 +1688,31 @@ def analyze_field_observation(
         "evidence":
             evidence,
 
+        # ----------------------------------------------------
+        # AUTHORITATIVE DETERMINISTIC RISK
+        # ----------------------------------------------------
+
         "risk":
             risk,
+
+        # ----------------------------------------------------
+        # AUTHORITATIVE DETERMINISTIC DECISION
+        # ----------------------------------------------------
 
         "decision":
             decision,
 
-        # Qwen3 advisory is informational only.
-        # Frontend must continue using `risk` and `decision`
-        # as the authoritative fields.
+        # ----------------------------------------------------
+        # JUDGE TRANSPARENCY
+        # ----------------------------------------------------
+
+        "judge_intelligence":
+            judge_intelligence,
+
+        # ----------------------------------------------------
+        # QWEN3 INFORMATIONAL ADVISORY ONLY
+        # ----------------------------------------------------
+
         "advisory":
             advisory,
 
@@ -1156,6 +1731,18 @@ def analyze_field_observation(
 
                 "available":
                     bool(sensor),
+
+                "device_id":
+                    (
+                        sensor.get(
+                            "device_id"
+                        )
+                        if isinstance(
+                            sensor,
+                            dict,
+                        )
+                        else None
+                    ),
 
                 "soil_moisture":
                     soil_moisture,
@@ -1207,9 +1794,11 @@ def analyze_field_observation(
                     ),
 
                 "observation_count":
-                    len(history)
-                    if history
-                    else 0,
+                    (
+                        len(history)
+                        if history
+                        else 0
+                    ),
 
             },
 
